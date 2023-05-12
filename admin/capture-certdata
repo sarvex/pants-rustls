@@ -32,21 +32,16 @@ def extract_certs(lines):
             buffer += l
 
 def collect(hostname):
-    subp = subprocess.Popen([
-        'openssl',
-        's_client',
-        '-showcerts',
-        '-connect',
-        hostname + ':443',
-        ],
-        stderr = subprocess.PIPE,
-        stdout = subprocess.PIPE,
-        stdin = subprocess.PIPE)
+    subp = subprocess.Popen(
+        ['openssl', 's_client', '-showcerts', '-connect', f'{hostname}:443'],
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stdin=subprocess.PIPE,
+    )
     stdout, stderr = subp.communicate('')
 
     stdout = stdout.splitlines()
-    certs = list(extract_certs(stdout))
-    return certs
+    return list(extract_certs(stdout))
 
 if __name__ == '__main__':
     certfile = lambda name, i: 'rustls/src/testdata/cert-%s.%d.der' % (name, i)
